@@ -38,6 +38,10 @@ apt-get install nginx -y
 if [ ! -d "/etc/nginx/" ]; then
 echo "Error: Nginx Install failed."
 exit 1
+else
+	curl -sS https://github.com/nagaeki/nginx-conf/raw/main/nginx.conf > /etc/nginx/nginx.conf
+	curl -sS https://github.com/nagaeki/nginx-conf/raw/main/default.conf > /etc/nginx/conf.d/default.conf
+fi
 
 # Install ACME.SH
 if [ ! -d "~/.acme.sh/" ]; then
@@ -46,5 +50,3 @@ fi
 
 # Install dhparam 
 curl -sS https://github.com/internetstandards/dhe_groups/raw/main/ffdhe4096.pem > /etc/nginx/ffdhe4096.pem
-curl -sS https://github.com/nagaeki/nginx-conf/raw/main/nginx.conf > /etc/nginx/nginx.conf
-curl -sS https://github.com/nagaeki/nginx-conf/raw/main/default.conf > /etc/nginx/conf.d/default.conf
