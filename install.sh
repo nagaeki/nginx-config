@@ -18,38 +18,26 @@ if [[ "$?" != "0" ]]; then
 	apt update
 	apt upgrade -y
 	apt autoremove -y
-	apt-get install -y apt-transport-https lsb-release ca-certificates socat
+	apt-get install -y curl gnupg2 ca-certificates lsb-release debian-archive-keyring
 fi
 
 # Install Nginx
-curl -sSLo /usr/share/keyrings/deb.sury.org-nginx-mainline.gpg https://packages.sury.org/nginx-mainline/apt.gpg
-curl -sSLo /usr/share/keyrings/deb.sury.org-nginx.gpg https://packages.sury.org/nginx/apt.gpg
+curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
+    | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 
-sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx-mainline.gpg] https://packages.sury.org/nginx-mainline/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx-mainline.list'
-sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list'
+echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" \
+    | tee /etc/apt/sources.list.d/nginx.list
+
+echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
+    | tee /etc/apt/preferences.d/99nginx
 
 apt-get update
-apt-get install nginx-core nginx-common nginx nginx-full -y
+apt-get install nginx -y
 
 if [ ! -d "/etc/nginx/" ]; then
 echo "Error: Nginx Install failed."
 exit 1
-else
-	# Create Nginx Cache Dir
-	mkdir -p /cache/
-	# Create Nginx Logs Dir
-	mkdir -p /etc/nginx/logs/error/
-	mkdir -p /etc/nginx/logs/access/
-	# Creat Nginx Basic Dir
-	mkdir -p /etc/nginx/include/
-	mkdir -p /etc/nginx/access/
-	# Create ACME Cert Dir
-	mkdir -p /var/cert/
-    
-	chmod -R 775 /cache/
-	chmod -R 775 /var/cert/
-
-fi
 
 # Install ACME.SH
 if [ ! -d "~/.acme.sh/" ]; then
@@ -58,3 +46,5 @@ fi
 
 # Install dhparam 
 curl -sS https://github.com/internetstandards/dhe_groups/raw/main/ffdhe4096.pem > /etc/nginx/ffdhe4096.pem
+curl -sS https://github.com/nagaeki/nginx-conf/raw/main/nginx.conf > /etc/nginx/nginx.conf
+curl -sS https://github.com/nagaeki/nginx-conf/raw/main/default.conf > /etc/nginx/conf.d/default.conf
