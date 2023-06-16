@@ -50,3 +50,5 @@ fi
 
 # Install dhparam 
 wget https://github.com/internetstandards/dhe_groups/raw/main/ffdhe4096.pem -O /etc/nginx/ffdhe4096.pem
+
+wget https://github.com/nagaeki/nginx-conf/raw/main/template.conf -O /etc/nginx/conf.d/template.conf.tmp
