@@ -46,6 +46,7 @@ fi
 # Install ACME.SH
 if [ ! -d "~/.acme.sh/" ]; then
 curl https://get.acme.sh | sh
+acme.sh --set-default-ca --server letsencrypt
 fi
 
 # Install dhparam
