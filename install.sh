@@ -18,7 +18,7 @@ if [[ "$?" != "0" ]]; then
 	apt update
 	apt upgrade -y
 	apt autoremove -y
-	apt-get install -y curl gnupg2 ca-certificates lsb-release debian-archive-keyring
+	apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
 fi
 
 # Install Nginx
@@ -48,7 +48,9 @@ if [ ! -d "~/.acme.sh/" ]; then
 curl https://get.acme.sh | sh
 fi
 
-# Install dhparam 
+# Install dhparam
 wget https://github.com/internetstandards/dhe_groups/raw/main/ffdhe4096.pem -O /etc/nginx/ffdhe4096.pem
 
 wget https://github.com/nagaeki/nginx-conf/raw/main/template.conf -O /etc/nginx/conf.d/template.conf.tmp
+
+systemctl enable nginx --now
