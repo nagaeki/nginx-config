@@ -39,8 +39,8 @@ if [ ! -d "/etc/nginx/" ]; then
 echo "Error: Nginx Install failed."
 exit 1
 else
-	wget https://github.com/nagaeki/nginx-conf/raw/main/nginx.conf -O /etc/nginx/nginx.conf
-	wget https://github.com/nagaeki/nginx-conf/raw/main/default.conf -O /etc/nginx/conf.d/default.conf
+	wget https://github.com/nagaeki/nginx-config/raw/main/nginx.conf -O /etc/nginx/nginx.conf
+	wget https://github.com/nagaeki/nginx-config/raw/main/default.conf -O /etc/nginx/conf.d/default.conf
 fi
 
 # Install ACME.SH
@@ -52,6 +52,6 @@ fi
 # Install dhparam
 wget https://github.com/internetstandards/dhe_groups/raw/main/ffdhe4096.pem -O /etc/nginx/ffdhe4096.pem
 
-wget https://github.com/nagaeki/nginx-conf/raw/main/conf.template -O /etc/nginx/conf.d/conf.template
+wget https://github.com/nagaeki/nginx-config/raw/main/conf.template -O /etc/nginx/conf.d/conf.template
 
 systemctl enable nginx --now
