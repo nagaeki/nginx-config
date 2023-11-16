@@ -40,7 +40,6 @@ echo "Error: Nginx Install failed."
 exit 1
 else
 	wget https://github.com/nagaeki/nginx-config/raw/main/nginx.conf -O /etc/nginx/nginx.conf
-	wget https://github.com/nagaeki/nginx-config/raw/main/default.conf -O /etc/nginx/conf.d/default.conf
 fi
 
 # Install ACME.SH
