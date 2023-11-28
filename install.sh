@@ -2,24 +2,10 @@
 
 Nginx_Dir="/etc/nginx"
 
-result=$(id | awk '{print $1}')
-if [[ $result != "uid=0(root)" ]]; then
-	echo "Use Root User, Please."
-	exit 1
-fi
-
-if [[ $(uname -s) != Linux ]]; then
-	echo "Use Linux System, Please."
-	exit 1
-fi
-
-res=`which apt-get 2>/dev/null`
-if [[ "$?" != "0" ]]; then
-	apt update
-	apt upgrade -y
-	apt autoremove -y
-	apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
-fi
+apt update
+apt upgrade -y
+apt autoremove -y
+apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
 
 # Install Nginx
 curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
@@ -40,10 +26,12 @@ echo "Error: Nginx Install failed."
 exit 1
 else
 	wget https://github.com/nagaeki/nginx-config/raw/main/nginx.conf -O /etc/nginx/nginx.conf
+	rm /etc/nginx/conf.d/default.conf
 fi
 
 # Install ACME.SH
 if [ ! -d "~/.acme.sh/" ]; then
+apt install crontab -y
 curl https://get.acme.sh | sh
 acme.sh --set-default-ca --server letsencrypt
 fi
